@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GitHub Repository Downloader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0074d9;
+        }
+
+        #download-form {
+            text-align: center;
+            margin: 30px auto;
+            width: 300px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        #class {
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .lesson-button {
+            background-color: #0074d9;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 5px;
+        }
+
+        .lesson-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const classInput = document.getElementById("class");
+            const lessonButtons = document.querySelectorAll(".lesson-button");
+
+            lessonButtons.forEach(function(button) {
+                button.addEventListener("click", function() {
+                    const user = "Upendra2527"; // Your GitHub username
+                    const classNumber = classInput.value;
+                    const lessonNumber = button.getAttribute("data-lesson");
+
+                    if (classNumber >= 1 && classNumber <= 5) {
+                        const repo = `OER${classNumber}TO${lessonNumber}`;
+                        const repositoryURL = `https://github.com/${user}/${repo}/archive/refs/heads/main.zip`;
+
+                        // Create a hidden anchor element to trigger the download
+                        const downloadLink = document.createElement('a');
+                        downloadLink.href = repositoryURL;
+                        downloadLink.download = `${repo}.zip`;
+                        downloadLink.style.display = 'none';
+                        document.body.appendChild(downloadLink);
+                        downloadLink.click();
+                        document.body.removeChild(downloadLink);
+                    } else {
+                        alert("Please enter a valid class number (1-5).");
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Repository Downloader</h1>
+    <form id="download-form">
+        <label for="class">Choose Class (1-5):</label>
+        <input type="number" id="class" name="class" min="1" max="5" placeholder="Enter class number">
+        <button type="button" class="lesson-button" data-lesson="1">Lesson 1</button>
+        <button type="button" class="lesson-button" data-lesson="2">Lesson 2</button>
+        <button type="button" class="lesson-button" data-lesson="3">Lesson 3</button>
+        <button type="button" class="lesson-button" data-lesson="4">Lesson 4</button>
+        <button type="button" class="lesson-button" data-lesson="5">Lesson 5</button>
+    </form>
+</body>
+</html>
