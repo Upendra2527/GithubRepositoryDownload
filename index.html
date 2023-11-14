@@ -1,26 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GitHub Repository Downloader</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            font-family: 'Times New Roman', Times, serif; /* Updated font */
+            margin: 0;
+            padding: 0;
+            background: url('https://st4.depositphotos.com/3367263/19970/i/450/depositphotos_199707812-stock-photo-digital-composite-books-graduation-hat.jpg') no-repeat center center fixed;
+            background-size: cover;
         }
 
         h1 {
             text-align: center;
-            color: #0074d9;
+            color: #fff;
+            margin-top: 50px;
         }
 
-        #download-form {
+        #main-content {
             text-align: center;
-            margin: 30px auto;
-            width: 300px;
-            background-color: #fff;
+            margin: 50px auto;
             padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease-in-out;
+            max-width: 400px;
         }
 
         label {
@@ -31,41 +38,120 @@
 
         #class {
             padding: 10px;
-            width: 100%;
-            margin-bottom: 20px;
+            width: 80%;
+            margin: 0 auto 20px auto; /* Adjusted margin */
             border: 1px solid #ddd;
             border-radius: 5px;
+            box-sizing: border-box; /* Ensures padding and border are included in the width */
         }
 
         .lesson-button {
             background-color: #0074d9;
             color: #fff;
             border: none;
-            padding: 10px 20px;
+            padding: 8px; /* Adjusted button size */
             cursor: pointer;
             border-radius: 5px;
             margin: 5px;
+            transition: background-color 0.3s ease-in-out;
         }
 
         .lesson-button:hover {
             background-color: #0056b3;
         }
+
+        #intro-text,
+        #download-info {
+            text-align: left; /* Adjusted alignment */
+            margin: 20px auto;
+            color: #000; /* Black text color */
+            max-width: 400px;
+        }
+
+        .points {
+            text-align: left;
+            color: #000; /* Black text color */
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 0;
+            list-style: none;
+        }
+
+        .points li {
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .points li:before {
+            content: '\2022'; /* Bullet point character */
+            color: #0074d9; /* Bullet point color */
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+            position: absolute;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
     </style>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const classInput = document.getElementById("class");
-            const lessonButtons = document.querySelectorAll(".lesson-button");
 
-            lessonButtons.forEach(function(button) {
-                button.addEventListener("click", function() {
-                    const user = "Upendra2527"; // Your GitHub username
-                    const classNumber = classInput.value;
-                    const lessonNumber = button.getAttribute("data-lesson");
+            classInput.addEventListener("change", function() {
+                const classNumber = classInput.value;
+                const lessonButtonsContainer = document.getElementById("lesson-buttons-container");
+                lessonButtonsContainer.innerHTML = ""; // Clear existing buttons
 
-                    if (classNumber >= 1 && classNumber <= 5) {
-                        const repo = `OER${classNumber}TO${lessonNumber}`;
-                        const repositoryURL = `https://github.com/${user}/${repo}/archive/refs/heads/main.zip`;
+                if (classNumber >= 1 && classNumber <= 5) {
+                    for (let i = 1; i <= 8; i++) {
+                        const button = document.createElement("button");
+                        button.type = "button";
+                        button.className = "lesson-button";
+                        button.setAttribute("data-lesson", i);
+                        button.textContent = `Lesson ${i}`;
+                        lessonButtonsContainer.appendChild(button);
+                    }
+                } else {
+                    alert("Please enter a valid class number (1-5).");
+                }
+            });
 
+            const lessonButtonsContainer = document.getElementById("lesson-buttons-container");
+
+            lessonButtonsContainer.addEventListener("click", function(event) {
+                const user = "Upendra2527"; // Your GitHub username
+                const classNumber = classInput.value;
+                const lessonNumber = event.target.getAttribute("data-lesson");
+
+                if (classNumber >= 1 && classNumber <= 5) {
+                    const repo = `OER${classNumber}TO${lessonNumber}`;
+                    const repositoryURL = `https://github.com/${user}/${repo}/archive/refs/heads/main.zip`;
+
+                    // Check if repository is already downloaded
+                    if (localStorage.getItem(repo)) {
+                        const confirmDownload = confirm("Repository already downloaded. Do you want to download it again?");
+                        if (confirmDownload) {
+                            // Create a hidden anchor element to trigger the download
+                            const downloadLink = document.createElement('a');
+                            downloadLink.href = repositoryURL;
+                            downloadLink.download = `${repo}.zip`;
+                            downloadLink.style.display = 'none';
+                            document.body.appendChild(downloadLink);
+                            downloadLink.click();
+                            document.body.removeChild(downloadLink);
+
+                            // Mark repository as downloaded
+                            localStorage.setItem(repo, true);
+                        }
+                    } else {
                         // Create a hidden anchor element to trigger the download
                         const downloadLink = document.createElement('a');
                         downloadLink.href = repositoryURL;
@@ -74,24 +160,30 @@
                         document.body.appendChild(downloadLink);
                         downloadLink.click();
                         document.body.removeChild(downloadLink);
-                    } else {
-                        alert("Please enter a valid class number (1-5).");
+
+                        // Mark repository as downloaded
+                        localStorage.setItem(repo, true);
                     }
-                });
+                }
             });
         });
     </script>
 </head>
 <body>
-    <h1>Repository Downloader</h1>
-    <form id="download-form">
+    <h1>GitHub Repository Downloader</h1>
+    <div id="main-content" onsubmit="return false;">
         <label for="class">Choose Class (1-5):</label>
         <input type="number" id="class" name="class" min="1" max="5" placeholder="Enter class number">
-        <button type="button" class="lesson-button" data-lesson="1">Lesson 1</button>
-        <button type="button" class="lesson-button" data-lesson="2">Lesson 2</button>
-        <button type="button" class="lesson-button" data-lesson="3">Lesson 3</button>
-        <button type="button" class="lesson-button" data-lesson="4">Lesson 4</button>
-        <button type="button" class="lesson-button" data-lesson="5">Lesson 5</button>
-    </form>
+        <div id="lesson-buttons-container"></div>
+        <div id="intro-text">
+            <p>Enter the class number for the repository you want to download, and then choose the lesson.</p>
+        </div>
+        <div id="download-info">
+            <ul class="points">
+                <li>Repositories are marked as downloaded for reference.</li>
+                <li>You can choose to download them again if needed.</li>
+            </ul>
+        </div>
+    </div>
 </body>
 </html>
