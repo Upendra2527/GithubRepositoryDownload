@@ -4,20 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GitHub Repository Downloader</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: 'Times New Roman', Times, serif;
+            font-family: 'Times New Roman', Times, serif; /* Updated font */
             margin: 0;
             padding: 0;
             background: url('https://st4.depositphotos.com/3367263/19970/i/450/depositphotos_199707812-stock-photo-digital-composite-books-graduation-hat.jpg') no-repeat center center fixed;
             background-size: cover;
-            color: #fff;
         }
 
         h1 {
             text-align: center;
+            color: #fff;
             margin-top: 50px;
         }
 
@@ -41,17 +39,17 @@
         #class {
             padding: 10px;
             width: 80%;
-            margin: 0 auto 20px auto;
+            margin: 0 auto 20px auto; /* Adjusted margin */
             border: 1px solid #ddd;
             border-radius: 5px;
-            box-sizing: border-box;
+            box-sizing: border-box; /* Ensures padding and border are included in the width */
         }
 
         .lesson-button {
             background-color: #0074d9;
             color: #fff;
             border: none;
-            padding: 8px;
+            padding: 8px; /* Adjusted button size */
             cursor: pointer;
             border-radius: 5px;
             margin: 5px;
@@ -64,15 +62,15 @@
 
         #intro-text,
         #download-info {
-            text-align: left;
+            text-align: left; /* Adjusted alignment */
             margin: 20px auto;
-            color: #000;
+            color: #000; /* Black text color */
             max-width: 400px;
         }
 
         .points {
             text-align: left;
-            color: #000;
+            color: #000; /* Black text color */
             max-width: 400px;
             margin: 0 auto;
             padding: 0;
@@ -85,8 +83,8 @@
         }
 
         .points li:before {
-            content: '\2022';
-            color: #0074d9;
+            content: '\2022'; /* Bullet point character */
+            color: #0074d9; /* Bullet point color */
             font-weight: bold;
             display: inline-block;
             width: 1em;
@@ -110,13 +108,13 @@
             classInput.addEventListener("change", function() {
                 const classNumber = classInput.value;
                 const lessonButtonsContainer = document.getElementById("lesson-buttons-container");
-                lessonButtonsContainer.innerHTML = "";
+                lessonButtonsContainer.innerHTML = ""; // Clear existing buttons
 
                 if (classNumber >= 1 && classNumber <= 5) {
                     for (let i = 1; i <= 8; i++) {
                         const button = document.createElement("button");
                         button.type = "button";
-                        button.className = "lesson-button btn btn-primary";
+                        button.className = "lesson-button";
                         button.setAttribute("data-lesson", i);
                         button.textContent = `Lesson ${i}`;
                         lessonButtonsContainer.appendChild(button);
@@ -129,7 +127,7 @@
             const lessonButtonsContainer = document.getElementById("lesson-buttons-container");
 
             lessonButtonsContainer.addEventListener("click", function(event) {
-                const user = "Upendra2527";
+                const user = "Upendra2527"; // Your GitHub username
                 const classNumber = classInput.value;
                 const lessonNumber = event.target.getAttribute("data-lesson");
 
@@ -137,50 +135,55 @@
                     const repo = `OER${classNumber}TO${lessonNumber}`;
                     const repositoryURL = `https://github.com/${user}/${repo}/archive/refs/heads/main.zip`;
 
+                    // Check if repository is already downloaded
                     if (localStorage.getItem(repo)) {
                         const confirmDownload = confirm("Repository already downloaded. Do you want to download it again?");
                         if (confirmDownload) {
-                            downloadRepository(repositoryURL, `${repo}.zip`);
+                            // Create a hidden anchor element to trigger the download
+                            const downloadLink = document.createElement('a');
+                            downloadLink.href = repositoryURL;
+                            downloadLink.download = `${repo}.zip`;
+                            downloadLink.style.display = 'none';
+                            document.body.appendChild(downloadLink);
+                            downloadLink.click();
+                            document.body.removeChild(downloadLink);
+
+                            // Mark repository as downloaded
                             localStorage.setItem(repo, true);
                         }
                     } else {
-                        downloadRepository(repositoryURL, `${repo}.zip`);
+                        // Create a hidden anchor element to trigger the download
+                        const downloadLink = document.createElement('a');
+                        downloadLink.href = repositoryURL;
+                        downloadLink.download = `${repo}.zip`;
+                        downloadLink.style.display = 'none';
+                        document.body.appendChild(downloadLink);
+                        downloadLink.click();
+                        document.body.removeChild(downloadLink);
+
+                        // Mark repository as downloaded
                         localStorage.setItem(repo, true);
                     }
                 }
             });
-
-            function downloadRepository(url, filename) {
-                const downloadLink = document.createElement('a');
-                downloadLink.href = url;
-                downloadLink.download = filename;
-                downloadLink.style.display = 'none';
-                document.body.appendChild(downloadLink);
-                downloadLink.click();
-                document.body.removeChild(downloadLink);
-            }
         });
     </script>
 </head>
 <body>
-    <div class="container">
-        <h1 class="mt-5">GitHub Repository Downloader</h1>
-        <div id="main-content" onsubmit="return false;">
-            <label for="class" class="form-label">Choose Class (1-5):</label>
-            <input type="number" id="class" name="class" min="1" max="5" class="form-control mb-3" placeholder="Enter class number">
-            <div id="lesson-buttons-container"></div>
-            <div id="intro-text">
-                <p>Enter the class number for the repository you want to download, and then choose the lesson.</p>
-            </div>
-            <div id="download-info">
-                <ul class="points">
-                    <li>Repositories are marked as downloaded for reference.</li>
-                    <li>You can choose to download them again if needed.</li>
-                </ul>
-            </div>
+    <h1>GitHub Repository Downloader</h1>
+    <div id="main-content" onsubmit="return false;">
+        <label for="class">Choose Class (1-5):</label>
+        <input type="number" id="class" name="class" min="1" max="5" placeholder="Enter class number">
+        <div id="lesson-buttons-container"></div>
+        <div id="intro-text">
+            <p>Enter the class number for the repository you want to download, and then choose the lesson.</p>
+        </div>
+        <div id="download-info">
+            <ul class="points">
+                <li>Repositories are marked as downloaded for reference.</li>
+                <li>You can choose to download them again if needed.</li>
+            </ul>
         </div>
     </div>
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
