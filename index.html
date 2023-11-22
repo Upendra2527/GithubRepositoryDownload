@@ -181,43 +181,46 @@
                             // Ask user if they want to download the file again
                             const confirmDownload = confirm("Repository already downloaded. Do you want to download it again?");
                             if (confirmDownload) {
-                                downloadAndStore(repositoryURL, repo);
+                                // Create a hidden anchor element to trigger the download
+                                const downloadLink = document.createElement('a');
+                                downloadLink.href = repositoryURL;
+                                downloadLink.download = `${repo}.zip`; // Remove the download path
+                                downloadLink.style.display = 'none';
+                                document.body.appendChild(downloadLink);
+                                downloadLink.click();
+                                document.body.removeChild(downloadLink);
+
+                                // Mark repository as downloaded
+                                localStorage.setItem(repo, true);
+
+                                // Notify Thunkable app about download completion
+                                window.parent.postMessage({ type: 'downloadCompleted' }, '*');
+
+                                // Display the downloaded repository name
+                                downloadedRepositoriesContainer.innerHTML += `<p>${repo} is downloaded.</p>`;
                             }
                         } else {
-                            downloadAndStore(repositoryURL, repo);
+                            // Create a hidden anchor element to trigger the download
+                            const downloadLink = document.createElement('a');
+                            downloadLink.href = repositoryURL;
+                            downloadLink.download = `${repo}.zip`; // Remove the download path
+                            downloadLink.style.display = 'none';
+                            document.body.appendChild(downloadLink);
+                            downloadLink.click();
+                            document.body.removeChild(downloadLink);
+
+                            // Mark repository as downloaded
+                            localStorage.setItem(repo, true);
+
+                            // Notify Thunkable app about download completion
+                            window.parent.postMessage({ type: 'downloadCompleted' }, '*');
+
+                            // Display the downloaded repository name
+                            downloadedRepositoriesContainer.innerHTML += `<p>${repo} is downloaded.</p>`;
                         }
                     }
                 }
             });
-
-            function downloadAndStore(url, repo) {
-                // Simulate the download and store process
-                // In a real implementation, you would use Thunkable blocks or other mechanisms
-                // to download the file and store it in local storage.
-
-                console.log(`Downloading and storing ${repo}...`);
-
-                // Simulate storing in local storage
-                localStorage.setItem(repo, true);
-
-                console.log(`${repo} downloaded and stored.`);
-
-                // Notify Thunkable app about download completion
-                window.parent.postMessage({ type: 'downloadCompleted', repo: repo }, '*');
-
-                // Display the downloaded repository name
-                downloadedRepositoriesContainer.innerHTML += `<p>${repo} is downloaded.</p>`;
-            }
-        });
-
-        // Listen for messages from Thunkable
-        window.addEventListener('message', function (event) {
-            if (event.data.type === 'openViewer' && event.data.repo) {
-                // Open the viewer with the downloaded repository
-                console.log(`Open viewer for ${event.data.repo}`);
-                // Add your logic to open the viewer in Thunkable
-                // You can use Thunkable blocks for this purpose.
-            }
         });
     </script>
 
